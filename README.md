@@ -20,5 +20,12 @@ And the paths will be by taxi, bus or walk from home to or from the airports/coa
 
 My places and paths are members of the Places and Paths classes respectively. This allows me to store the information I will need to perfomr the algorithm, such as temporary labels at the nodes and length of edges.
 
-My algorithm is a simple two step iteration and stops when all labels have been fixed.
+My algorithm is a simple two step iteration and stops when all labels have been fixed. The statement of the algorithm is as follows, from start X to finish Y.
 
+
+1. Assign a temporary label l_i = infty to all vertices except for X, l_X=0.
+2. Find vertex K with smallest temporary label l_K. Make it permanent and call it L_K. If K=Y, stop, path has been found.
+3. For each vertex J with a temporary label, determine the smallest of l_J and l_K+d_KJ (d_KJ=shortest edge from K to J) and assing this value to l_J. If there are any temporary labels not infinity, return to step 2, otherwise go to step 4.
+4. The vertices with temporary labels all have labels of infinity so the algorithm must stop, there is no path from X to Y.
+
+In my program, step 2 above is called Step1 and step 3 above is called Step2, these are the functions iterated until algorithm stops.
