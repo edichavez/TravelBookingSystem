@@ -8,12 +8,14 @@ This problem can be divided in two parts:
 
 FIRST APPROACH
 On this first attempt, I will construct a simplified graph instead of searching for real information. Here our route X-Y will be from home in Bristol to a hotel in Edinburgh. The different stops will be:
-A = Home in Bristol
-B = Coach Station in Bristol
+
+A = Home in Bristol;
+B = Coach Station in Bristol;
 C = Airport in Bristol
 D = Coach Station in Edinburgh
 E = Airport Station in Edinburgh
 F = Hotel in Edinburgh
+
 And the paths will be by taxi, bus or walk from home to or from the airports/coach stations and coach or plane in the middle.
 
 My places and paths are members of the Places and Paths classes respectively. This allows me to store the information I will need to perfomr the algorithm, such as temporary labels at the nodes and length of edges.
