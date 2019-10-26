@@ -1,26 +1,18 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct 24 15:28:53 2019
-
-@author: edita
-"""
-
 ##TEKTowr ASSESSMENT: TRAVEL BOOKING SYSTEM
-#Creating a program that finds the fastest route from A to B
+#Creating a program that finds the fastest route from X to Y
 
 #PART 1: OUR GRAPH: Vertices are places, edges are means of trasnport.
 import random
+
 class Place:
     #Create the vertices of our graph, the Places class, ready to perform 
     #the algorithm.
-    def __init__(self,name,visited = False, temp_label = True,label = float("inf")):
+    
+    def __init__(self,name):
         self.name = name
-        self.visited = visited
-        self.temp_label = temp_label
-        self.label = label
-        
-    def visit(self):
-        self.visited = True
+        self.temp_label = True
+        self.label = float("inf")
+        self.neighbours = []
         
     def assign(self,value):
         self.label = value
@@ -28,28 +20,41 @@ class Place:
     def fix(self):
         self.temp_label = False
         
+    def add_neighbour(self,path):
+        if path.origin == self:
+            self.neighbours.append(path)
+            #print (path.origin.name+' was added to neighbours of '+ self.name)
+        #else:
+            #print (path.origin.name+' does not lead to '+ self.name)
+            
+    def what_neighbours(self):
+        if self.neighbours == []:
+            print ('No preceeding neighbours found')
+        else:
+            print (self.name + ' has neighbours:' )
+            for i in self.neighbours:
+                print (i.destination.name + ' via ' + i.id )
+
     def info(self):
-        if self.visited == False:
-            print('%s has not yet been visited, thus label is infinity'
-                  %self.name)
-        elif self.visited == True and self.temp_label == True:
+        if self.temp_label == True:
             print ('%s has temporary label of %g' %(self.name, self.label))
         else:
             print ('%s has a fixed label of %g' %(self.name, self.label))
-
+    
 #Now we create a class of paths, together with some subclasses. We can ask for 
 #information about them and also get how long the journey will take.
-#Note that the ORIGIN and DESTINATIONS are from the Places Class above
+#Note that the ORIGIN and DESTINATIONS are from the Places class above
 class Path:
     #Create the graph connecting all PLaces
-    def __init__(self,origin,destination,length):
+    def __init__(self,id,origin,destination,length):
+        self.id = id 
         self.origin = origin 
         self.destination = destination
         self.length= length
         
     def info_path(self):
-        print('From %s to %s, taking %g hrs.' 
-              % (self.origin.name, self.destination.name, self.length))
+        print('%s goes from %s to %s, taking %g hrs.' 
+              % (self.id, self.origin.name, self.destination.name, self.length))
         
     def how_long(self):
         return self.length
@@ -59,13 +64,13 @@ class Plane(Path):
     #always arrive 2hrs early to the airport
     arriving_time = 2 
     #control time depends on the destination airport
-    def __init__(self, origin,destination,length,control_time):
-        super().__init__(origin, destination, length)
+    def __init__(self,id, origin,destination,length,control_time):
+        super().__init__(id,origin, destination, length)
         self.control_time = control_time
         
     def info_path(self):
-        print('From %s to %s, taking %g hrs in total (with waiting times).' 
-              % (self.origin.name, self.destination.name, self.length + 
+        print('%s goes from %s to %s, taking %g hrs in total, with waiting times.' 
+              % (self.id,self.origin.name, self.destination.name, self.length + 
                  self.arriving_time + self.control_time))
         
     def how_long(self):
@@ -74,15 +79,14 @@ class Plane(Path):
 class Car(Path):
     #Each different type of path will have extra bits
     #raffic delay is random but under 1hr.
-    def __init__(self, origin,destination,length,
-                 traffic_delay=random.uniform(0,1)):
-        super().__init__(origin, destination, length)
-        self.traffic_delay = traffic_delay
+    def __init__(self,id, origin,destination,length):
+        super().__init__(id,origin, destination, length)
+        self.traffic_delay=random.uniform(0,1)
         
     def info_path(self):
-        print('From %s to %s, taking %g hrs but traffic makes you %g hrs late.' 
-              % (self.origin.name, self.destination.name, 
-                 self.length, self.traffic_delay))
+        print('%s goes from %s to %s, taking %g hrs, with traffic.' 
+              % (self.id,self.origin.name, self.destination.name, 
+                 self.length + self.traffic_delay))
         
     def how_long(self):
         return self.length + self.traffic_delay
@@ -91,96 +95,109 @@ class Coach(Car):
     #Each different type of path will have extra bits
     #A coach is subject to traffic, just as cars, but also delays 10% of the
     #travel time due to stops along the way.
-    def __init__(self, origin,destination,length,
-                 traffic_delay=random.uniform(0,1), stops_delay = None):
-        super().__init__(origin, destination, length, 
-             traffic_delay)
+    delay = 1.1
+    def __init__(self, id, origin,destination,length):
+        super().__init__(id,origin, destination, length)
+        self.traffic_delay = random.uniform(0,1)
     
     def info_path(self):
-        print('From %s to %s, taking %g hrs but traffic and stops' +
-              'make you %g hrs late.' 
-              % (self.origin.name, self.destination.name, 1.1*self.length, 
-                 self.traffic_delay))
+        print('%s goes from %s to %s, taking %g hrs in total, with traffic and stops'
+              % (self.id, self.origin.name, self.destination.name, 
+                 self.delay*self.length + self.traffic_delay))
         
     def how_long(self):
-        return 1.1*self.length + self.traffic_delay
+        return self.delay*self.length + self.traffic_delay
     
 
     
-#Places for us to use
+#OUR GRAPH SET UP 
+    
 #Places for us to use
 A = Place ('Home Bristol')
 B = Place ('Coach Station Bristol')
 C = Place ('Airport Bristol')
-D = Place ('Coach Station Edinburg')
-E = Place ('Airport Edinburg')
-F = Place ('Hotel Edinburg')
+D = Place ('Coach Station Edinburgh')
+E = Place ('Airport Edinburgh')
+F = Place ('Hotel Edinburgh')
+G = Place ('Somewhere Else')
 
-taxi2coach = Car(A,B,0.5)
-taxi2air = Car(A,C,1)
-bus2coach = Coach (A,B,0.7)
-bus2air = Coach (A,C, 1.5)
-walk2coach = Path(A,B,1.1)
-walk2air = Path (A,C,2.1)
+#These are our different paths.
+#travelling to the Coach station by taxi, bur or walk, etc.
+taxi2coach = Car('Taxi1',A,B,0.5)
+taxi2air = Car('Taxi2',A,C,1)
+bus2coach = Coach ('Bus1',A,B,0.7)
+bus2air = Coach ('Bus2',A,C, 1.5)
+walk2coach = Path('Walk1',A,B,1.1)
+walk2air = Path ('Walk',A,C,2.1)
 
-megabus = Coach (B,D,6)
-plane = Plane(C,E,1.5,1) #plane needs control time
+megabus = Coach ('Coach',B,D,6)
+plane = Plane('Plane',C,E,1.5,1) #plane needs control time
 
-coach2taxi = Car(D,F,0.3)
-air2taxi = Car(E,F,0.6)
-coach2bus = Coach (D,F,0.5)
-air2bus = Coach (E,F, 0.8)
-coach2walk = Path (D,F,0.8)
-air2walk = Path (E,F,1.6)
+coach2taxi = Car('Taxi3',D,F,0.3)
+air2taxi = Car('Taxi4',E,F,0.6)
+coach2bus = Coach ('Bus3',D,F,0.5)
+air2bus = Coach ('Bus4',E,F, 0.8)
+coach2walk = Path ('Walk3',D,F,0.8)
+air2walk = Path ('Walk4',E,F,1.6)
 
-places = [A,B,C,D,E,F]
+#We put these in two lists to refer to during the algorithm
+places = [A,B,C,D,E,F,G]
 paths = [taxi2coach,taxi2air,bus2coach,bus2air, walk2coach,walk2air,
          megabus,plane,
          coach2taxi,air2taxi,coach2bus,air2bus,coach2walk,air2walk]
-
-#ALGORTIHM FUNCTION
-  
-#Create the algorithm, using Dijkastra's method for shortest path finding.
-#I have created the two steps that Dijkastra's fuction will call.
-
-def step1(places, B):
-    nodes = [x for x in places if x.visited == True and x.temp_label == True]
-    #This step fixes the minimum temporary label and stops 
-    #the algorithm when arriving at the end point.
-    for x in places:
-        while x in nodes:
-            if x.label == min(i.label for i in nodes):
-                x.temp_label = False
-                k = x.name
-                print ()
-                if k == B.name:
-                    print('You have found your route to %s!' %B.name)
-                    break
-                step2(places,paths,k,A,B)
-
-def step2(places,paths,k,A,B):
-    nodes = [[x] for x in places if x.temp_label == True]
-    print([i[0].name for i in nodes])
-    for i in nodes:
-        i.append(x for x in paths 
-             if x.origin == k and x.destination == i[0].name)
-    
-        for j in i[1:]:
-            print(j)
-            i[0].label = min(i[0].label,i[0].label+j.how_long())
-    for i in places:
-        if i.label == float('inf'):
-            step1(places,B)
-        else:
-            print ('There is no path from %s to %s' % (A.name, B.name))
-            break
+#This bit adds the preceeding neighbours to each place in our list
+for i in places:
+    for j in paths:
+        i.add_neighbour(j)
         
-def Dijkastra(A,B,places,paths):
-    A.assign(0)
-    A.visit()
-    step1(places,B)
-    print ('The route is as follows' (i.name, i.label for i in places))
+        
+#NOW THE ALGORITHM
+        
+        
+def Dijkstra(places,paths):
+    #This first part obtains the start and end of the journey, which must be 
+    #one of our stored places.
+    while True:
+        try:
+            X = input('Where would you like to travel from? ')
+        except ValueError:
+            print('Sorry, I didn\'t catch that')
+            continue
+        if X not in (i.name for i in places):
+            print('Sorry, that place is not in our list, try again?')
+            continue
+        else:
+            break
+    X = next(i for i in places if i.name == X)
+    while True:
+        try:
+            Y = input('Ok, and where do you want to go to? ')
+        except ValueError:
+            print('Sorry, I didn\'t catch that')
+            continue
+        if Y not in (i.name for i in places):
+            print('Sorry, that place is not in our list, try again?')
+            continue
+        else:
+            break
+    Y = next(i for i in places if i.name == Y)
+    print ('Great, let\'s get you from %s to %s!' %(X.name, Y.name) )
     
-    
-
+    #We now have X and Y, let's run the algorithm.
+    X.assign(0)
+    #route = []
+    while Y.temp_label == True:
+        minlabel = min(i.label for i in places if i.temp_label == True)
+        K = next(i for i in places if 
+             (i.label == minlabel and i.temp_label == True))
+        K.fix()
+        for i in K.neighbours:
+            i.destination.label = min(i.destination.label, K.label+i.how_long())
+            K.fix()
+    if Y.label == float('inf'):
+        print ('It is impossible to get to %s from %s.' %(Y.name, X.name))
+    else:
+        hrs,mi = divmod(Y.label,1)
+        mi = int(mi*60)
+        print('You have found your path! It will take %g hrs %g minutes.' %(hrs,mi))
     
