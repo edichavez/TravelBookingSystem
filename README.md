@@ -13,7 +13,7 @@ A = Home Bristol;
 B = Coach Station Bristol;
 C = Airport Bristol
 D = Coach Station Edinburgh
-E = Airport Station Edinburgh
+E = Airport Edinburgh
 F = Hotel Edinburgh
 G = Somewhere Else (use this just to demonstrate what happens if there are no available routes)
 
@@ -21,7 +21,4 @@ And the paths will be by taxi, bus or walk from home to or from the airports/coa
 
 My places and paths are members of the Places and Paths classes respectively. This allows me to store the information I will need to perform the algorithm, such as temporary labels or lists of neighbouring places.
 
-My algorithm is a simple while loop that stops when Y has been fixed (i.e. visited). Simply download the script and run it, then call the funcion, type [time,route] = Take_me_somewhere() in order to store your path.
-
-FURTHERMORE
-This method was my first thought, as I tried to show my understanding of classes, but after researching the implementation of Dijkstra's algorithm. Next I want to demonstrate a more complex version that would take many more places and paths.
+My algorithm is a simple while loop that stops when Y has been fixed (i.e. visited). Simply download the script and run it, then call the funcion Take_me_somewhere().
