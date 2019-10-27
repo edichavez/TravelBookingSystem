@@ -224,7 +224,7 @@ def Take_me_somewhere():
     else:
         hrs,mi = divmod(Y.label,1)
         mi = int(mi*60)
-        print('We have found your path!'
+        print('I\'ve found your path!'
               'It will take %g hrs %g minutes.' %(hrs,mi))
         #Now we will search for a route that will achieve this minimum.
         node = Y #we start to search from the end
@@ -232,6 +232,7 @@ def Take_me_somewhere():
         #print(total)
         while node.label != 0:
             searching_path = next(i for i in node.preceeding if (node.label-i.time == i.origin.label))
+    ###sometimes it doesn't find such a path! 
             route.append([searching_path.destination.name, searching_path.id,
                           searching_path.time])
             node = searching_path.origin
@@ -239,4 +240,4 @@ def Take_me_somewhere():
     print ('\n Follow this route from %s:' % X.name)
     for i in route:
         print('go to %s via %s, takes %g hrs,' % (i[0],i[1],i[2]))
-    return Y.label,route
+    #return Y.label,route
