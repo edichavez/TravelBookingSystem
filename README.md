@@ -24,5 +24,5 @@ My places and paths are members of the Places and Paths classes respectively. Th
 My algorithm is a simple while loop that stops when Y has been fixed (i.e. visited). 
 
 TO RUN IT
-Simply download the folder and run the system module. The fractals module is just to answer the question of what are fractals used for!
+Simply download the folder and run the system module.The fractals module is just to answer the question of what are fractals used for, just open it and run it!
 
