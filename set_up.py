@@ -1,4 +1,10 @@
-''' TEKTowr ASSESSMENT: TRAVEL BOOKING SYSTEM '''
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 27 21:07:53 2019
+
+@author: edita
+"""
+##TEKTowr ASSESSMENT: TRAVEL BOOKING SYSTEM
 #Creating a program that finds the fastest route from X to Y
 
 #PART 1: OUR GRAPH: Vertices are places, edges are means of trasnport.
@@ -195,7 +201,7 @@ def Take_me_somewhere(places,paths):
                 route.append([searching_path.destination.name, searching_path.id,
                           searching_path.time])
                 node = searching_path.origin
-            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why yet!) 
+            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why!) 
                 print('Sorry, I couldn\'t write down your path.')
                 er=True
                 break
