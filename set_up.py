@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 27 21:07:53 2019
-
-@author: edita
-"""
-##TEKTowr ASSESSMENT: TRAVEL BOOKING SYSTEM
+''' TEKTowr ASSESSMENT: TRAVEL BOOKING SYSTEM '''
 #Creating a program that finds the fastest route from X to Y
 
 #PART 1: OUR GRAPH: Vertices are places, edges are means of trasnport.
@@ -69,11 +63,10 @@ class Path:
         
     def info_path(self):
         print('%s goes from %s to %s, taking %g hrs.' 
-              % (self.id, self.origin.name, self.destination.name, self.length))
+              % (self.id, self.origin.name, self.destination.name, self.time))
         
     def how_long(self):
-        time = self.length
-        hrs,mi = divmod(time,1)
+        hrs,mi = divmod(self.time,1)
         mi = int(mi*60)
         print(' %g hrs %g mins' %(hrs,mi))
  
@@ -87,16 +80,6 @@ class Plane(Path):
         self.control_time = control_time
         self.time = self.length + self.control_time + self.arriving_time
         
-    def info_path(self):
-        print('%s goes from %s to %s, taking %g hrs in total, with waiting times.' 
-              % (self.id,self.origin.name, self.destination.name, self.length + 
-                 self.arriving_time + self.control_time))
-        
-    def how_long(self):
-        time = self.length + self.control_time + self.arriving_time
-        hrs,mi = divmod(time,1)
-        mi = int(mi*60)
-        print(' %g hrs %g mins' %(hrs,mi))
     
 class Car(Path):
     #Each different type of path will have extra bits
@@ -107,17 +90,6 @@ class Car(Path):
         self.traffic_delay=random.uniform(1,1.5)
         self.time = self.length*self.traffic_delay
         
-    def info_path(self):
-        print('%s goes from %s to %s, taking %g hrs, with traffic.' 
-              % (self.id,self.origin.name, self.destination.name, 
-                 self.length*self.traffic_delay))
-        
-    def how_long(self):
-        time = self.length*self.traffic_delay
-        hrs,mi = divmod(time,1)
-        mi = int(mi*60)
-        print(' %g hrs %g mins' %(hrs,mi))
-
 class Coach(Car):
     #Each different type of path will have extra bits
     #A coach is subject to traffic, just as cars, but also delays 10% of the
@@ -128,18 +100,6 @@ class Coach(Car):
         self.traffic_delay = random.uniform(1,1.5)
         self.time = self.delay*self.length*self.traffic_delay
     
-    def info_path(self):
-        print('%s goes from %s to %s, taking %g hrs in total, with traffic and stops'
-              % (self.id, self.origin.name, self.destination.name, 
-                 self.delay*self.length*self.traffic_delay))
-        
-    def how_long(self):
-        time = self.delay*self.length*self.traffic_delay
-        hrs,mi = divmod(time,1)
-        mi = int(mi*60)
-        print(' %g hrs %g mins' %(hrs,mi))
-    
-
 #NOW THE ALGORITHM
               
 def Take_me_somewhere(places,paths):
@@ -201,8 +161,8 @@ def Take_me_somewhere(places,paths):
                 route.append([searching_path.destination.name, searching_path.id,
                           searching_path.time])
                 node = searching_path.origin
-            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why!) 
-                print('Sorry, I couldn\'t write down your path.')
+            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why yet!) 
+                print('Apologies, I couldn\'t write down your path.')
                 er=True
                 break
     
