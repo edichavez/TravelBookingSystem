@@ -195,7 +195,7 @@ def Take_me_somewhere(places,paths):
                 route.append([searching_path.destination.name, searching_path.id,
                           searching_path.time])
                 node = searching_path.origin
-            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why!) 
+            except:###sometimes the loop in searching_path stops without finding a match (I am not sure why yet!) 
                 print('Sorry, I couldn\'t write down your path.')
                 er=True
                 break
