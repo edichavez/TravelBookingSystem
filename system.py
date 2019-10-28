@@ -1,4 +1,10 @@
-''' Run this to get from Bristol to Edinburgh '''
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 27 21:08:10 2019
+
+@author: edita
+"""
+
 #OUR GRAPH SET UP 
 from set_up import Take_me_somewhere,Place,Path,Coach,Car,Plane
 #Places for us to use
